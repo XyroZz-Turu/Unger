@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Amplop Premium Realistis</title>
+<style>
+  body{
+    margin:0;display:flex;align-items:center;justify-content:center;
+    height:100vh;background:linear-gradient(135deg,#4facfe,#00f2fe);
+    font-family:"Poppins",sans-serif;overflow:hidden;
+  }
+  .stage{text-align:center;position:relative;}
+  h1{color:#fff;margin-bottom:20px;text-shadow:0 2px 6px rgba(0,0,0,.3);}
+
+  /* Amplop */
+  .envelope{
+    position:relative;width:300px;height:200px;cursor:pointer;perspective:1200px;
+  }
+  .back{
+    position:absolute;inset:0;
+    background:linear-gradient(180deg,#e53935,#c62828);
+    border-radius:8px;overflow:hidden;z-index:1;
+    box-shadow:0 12px 28px rgba(0,0,0,.4);
+  }
+  .back:after{
+    content:"";position:absolute;bottom:0;left:0;width:0;height:0;
+    border-left:150px solid transparent;
+    border-right:150px solid transparent;
+    border-bottom:100px solid #b71c1c;
+  }
+
+  .front{
+    position:absolute;top:0;left:0;right:0;height:120px;z-index:2;
+    transform-origin:top center;
+    transition:transform 1s ease;
+  }
+  .front:before{
+    content:"";position:absolute;top:0;left:0;width:0;height:0;
+    border-left:150px solid transparent;
+    border-right:150px solid transparent;
+    border-top:120px solid #d32f2f;
+  }
+
+  .letter{
+    position:absolute;left:12px;right:12px;top:12px;height:180px;background:#fff;
+    border-radius:6px;box-shadow:0 8px 20px rgba(0,0,0,0.25);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    transform:translateY(100%);transition:transform 1s ease .8s;z-index:0;
+  }
+  .letter h2{margin:0;font-size:72px;color:#d32f2f;font-weight:800;}
+  .letter p{margin-top:6px;font-size:14px;letter-spacing:2px;color:#d32f2f;}
+
+  .open .front{transform:rotateX(-180deg);}
+  .open .letter{transform:translateY(0);}
+
+  /* Koin */
+  .coin{
+    position:absolute;width:40px;height:40px;
+    background:radial-gradient(circle at 30% 30%, #fff7a8, #f4c842);
+    border-radius:50%;border:2px solid #d9a600;
+    box-shadow:0 0 6px rgba(0,0,0,.3);
+    animation:fly 2s forwards;
+    overflow:hidden;
+  }
+
+  /* Efek kilau */
+  .sparkle{
+    position:absolute;top:0;left:-50%;width:200%;height:100%;
+    background:linear-gradient(120deg,transparent 0%,rgba(255,255,255,0.9) 50%,transparent 100%);
+    transform:skewX(-20deg);
+    animation:shine 1s infinite;
+  }
+
+  @keyframes fly{
+    0%{opacity:1;transform:translate(0,0) scale(1);}
+    100%{opacity:0;transform:translate(var(--x), var(--y)) scale(0.5);}
+  }
+  @keyframes shine{
+    0%{transform:translateX(-100%) skewX(-20deg);}
+    100%{transform:translateX(100%) skewX(-20deg);}
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <h1>DANA Kaget</h1>
+    <div class="envelope" id="env">
+      <div class="back"></div>
+      <div class="front"></div>
+      <div class="letter">
+        <h2>80</h2>
+        <p>DIRGAHAYU REPUBLIK INDONESIA</p>
+      </div>
+    </div>
+    <p style="color:#fff;margin-top:16px;">Tap amplop buat lihat isi</p>
+  </div>
+
+  <audio id="paperSound" preload="auto">
+    <source src="https://www.fesliyanstudios.com/play-mp3/387" type="audio/mpeg">
+  </audio>
+
+<script>
+  const env=document.getElementById('env');
+  const sound=document.getElementById('paperSound');
+  let opened=false;
+
+  function spawnCoins(){
+    for(let i=0;i<15;i++){
+      const coin=document.createElement("div");
+      coin.className="coin";
+      coin.style.left=(window.innerWidth/2-20)+"px";
+      coin.style.top=(window.innerHeight/2-100)+"px";
+      const x=(Math.random()*500-250)+"px";
+      const y=(Math.random()*-350-120)+"px";
+      coin.style.setProperty("--x",x);
+      coin.style.setProperty("--y",y);
+
+      // tambahkan sparkle ke dalam koin
+      const sparkle=document.createElement("div");
+      sparkle.className="sparkle";
+      coin.appendChild(sparkle);
+
+      document.body.appendChild(coin);
+      setTimeout(()=>coin.remove(),2000);
+    }
+  }
+
+  env.addEventListener('click',()=>{
+    if(opened) return;
+    opened=true;
+    env.classList.add('open');
+    sound.currentTime=0; sound.play();
+    spawnCoins();
+    setTimeout(()=>{window.location.href="cuki.html";},2500);
+  });
+</script>
+</body>
+</html>

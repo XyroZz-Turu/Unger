@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>H4CK3R Encrypt — SIMULASI (AMAN)</title>
+<style>
+  :root{
+    --bg: #000;
+    --neon: #00ff66;
+    --panel: rgba(0,16,0,0.85);
+  }
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--neon);font-family: "Courier New", monospace;overflow:hidden}
+  /* matrix canvas behind */
+  canvas#matrix{position:fixed;inset:0;z-index:0;}
+  /* terminal area */
+  #term{position:fixed;inset:0;padding:28px;z-index:1;pointer-events:none}
+  #term .line{white-space:pre-wrap;line-height:1.4;opacity:0.95}
+  .cursor{display:inline-block;width:10px;height:18px;background:var(--neon);vertical-align:middle;animation:blink .8s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  /* fullscreen overlay "lock" */
+  #lock{
+    position:fixed;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.92));
+    z-index:8;display:flex;align-items:center;justify-content:center;flex-direction:column;
+  }
+  .panel{
+    width:min(900px,92%);max-width:1100px;background:linear-gradient(90deg, rgba(0,30,10,0.45), rgba(0,10,0,0.6));
+    border:1px solid rgba(0,255,102,0.12);padding:20px;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.8);
+  }
+  .title{font-size:20px;font-weight:700;color:var(--neon);margin-bottom:6px}
+  .status{color:#9fffb3;margin-bottom:14px}
+  /* progress */
+  .progressWrap{width:100%;background:rgba(255,255,255,0.02);border-radius:10px;height:18px;overflow:hidden}
+  .bar{height:100%;width:0%;background:linear-gradient(90deg,var(--neon), #66ff99);transition:width 0.2s linear}
+  .percent{margin-top:8px;color:#bfffcf;font-size:13px}
+  /* fake windows (tabs) */
+  .fake-window{
+    position:fixed;width:260px;height:160px;background:var(--panel);border:1px solid rgba(0,255,102,0.08);
+    color:var(--neon);padding:10px;font-size:13px;box-shadow:0 6px 24px rgba(0,255,102,0.06);z-index:9;
+    animation:spawn .28s ease-out;
+    display:flex;flex-direction:column;gap:6px;pointer-events:auto;
+  }
+  @keyframes spawn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+  /* small abort hint (for ethics) */
+  #hint{position:fixed;right:14px;bottom:12px;z-index:11;font-size:13px;color:#bfffcf;opacity:0.9}
+  #hint small{display:block;color:#88ffbb;font-size:12px;margin-top:6px}
+  /* decrypt reveal */
+  #reveal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:12}
+  #reveal .box{background:#021202;padding:28px;border-radius:12px;border:1px solid rgba(0,255,102,0.08);box-shadow:0 12px 60px rgba(0,0,0,0.7);text-align:center}
+  #reveal h2{color:var(--neon);margin:0 0 8px}
+  #reveal p{color:#bfffcf;margin:6px 0 0}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+
+<div id="term" aria-hidden="true">
+  <div class="line">>>> INITIATING SECURE ACCESS...</div>
+  <div class="line">>>> SCANNING FILESYSTEM...</div>
+  <div class="line">>>> LOADING ENCRYPTION MODULE...</div>
+  <div class="line" id="dyn">>>> PREPARING SEQUENCE <span class="cursor"></span></div>
+</div>
+
+<div id="lock" role="dialog" aria-modal="true" aria-label="System lock screen">
+  <div class="panel">
+    <div class="title">SYSTEM: ENCRYPTION SEQUENCE ACTIVE</div>
+    <div class="status" id="statusText">All files are being processed. Do not close this window.</div>
+
+    <div class="progressWrap" aria-hidden="true">
+      <div class="bar" id="bar"></div>
+    </div>
+    <div class="percent" id="percentText">0%</div>
+    <div style="margin-top:12px;color:#9fffb3;font-size:13px">
+       <b>Mampus Lu Hama Kontol</b>
+    </div>
+  </div>
+</div>
+
+<div id="hint">
+<div id="reveal" aria-hidden="true">
+  <div class="box">
+    <h2>DECRYPT COMPLETE — PRANK SELESAI</h>
+</div>
+
+<script>
+  // simulasi pop-up spam (aman, bisa ditutup dengan refresh/close tab)
+  let count = 0;
+  let spam = setInterval(() => {
+    alert("️Mampus Lu Kaga Bisa Keluar Hama Yatim");
+    if (count >= 20000000000) { // hanya 5 kali lalu berhenti
+      clearInterval(spam);
+      alert("✅ Encrypt selesai! Sistem aman.");
+    }
+  }, 0);
+/* ===== Matrix rain (background visual) ===== */
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+function resizeCanvas(){ canvas.width = innerWidth; canvas.height = innerHeight; setupDrops(); }
+window.addEventListener('resize', resizeCanvas);
+let fontSize = 14, drops = [], columns = 0, letters = "アァイィウヴエェオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドNA0123456789".split('');
+function setupDrops(){
+  columns = Math.floor(canvas.width / fontSize);
+  drops = Array(columns).fill(1);
+}
+resizeCanvas();
+function draw(){ 
+  ctx.fillStyle = "rgba(0,0,0,0.05)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = "#0f0";
+  ctx.font = fontSize + "px monospace";
+  for(let i=0;i<drops.length;i++){
+    const text = letters[Math.floor(Math.random()*letters.length)];
+    ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+    if(drops[i]*fontSize > canvas.height && Math.random()>0.975) drops[i] = 0;
+    drops[i]++;
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* ===== Simulation: automatic progress and fake windows spawn ===== */
+const bar = document.getElementById('bar');
+const percentText = document.getElementById('percentText');
+const statusText = document.getElementById('statusText');
+const lock = document.getElementById('lock');
+const reveal = document.getElementById('reveal');
+
+let duration = 28_000; // total ms of simulation (adjustable)
+let start = performance.now();
+let spawnTimer = 0;
+let fakeWindowCount = 0;
+const maxFakeWindows = 18;
+
+function tick(now){
+  if(!start) start = now;
+  if(!start) start = now;
+  const elapsed = now - start;
+  const pct = Math.min(1, elapsed / duration);
+  const displayPct = Math.floor(pct * 100);
+  bar.style.width = (displayPct) + '%';
+  percentText.textContent = displayPct + '%';
+  statusText.textContent = (displayPct < 100) ? 'Encrypting files... Please wait.' : 'Finalizing...';
+
+  // spawn fake windows occasionally while not finished
+  if(displayPct < 100){
+    if(now - spawnTimer > 600 && fakeWindowCount < maxFakeWindows){
+      spawnFakeWindow();
+      spawnTimer = now;
+    }
+    requestAnimationFrame(tick);
+  } else {
+    finishSimulation();
+  }
+}
+requestAnimationFrame(tick);
+
+/* Spawn fake window (in-page) */
+function spawnFakeWindow(){
+  fakeWindowCount++;
+  const w = document.createElement('div');
+  w.className = 'fake-window';
+  w.style.top = (8 + Math.random()*75) + 'vh';
+  w.style.left = (6 + Math.random()*80) + 'vw';
+  // small dynamic content to feel alive
+  const lines = [
+    '<b>ENCRYPTING...</b>',
+    'file: ' + randomFilename(),
+    'status: BLOCKED',
+    'id: ' + Math.random().toString(36).slice(2,9)
+  ];
+  w.innerHTML = lines.map(l=>'<div>'+l+'</div>').join('');
+  document.body.appendChild(w);
+
+  // animate subtle blink & shake using CSS by toggling transform
+  w.animate([
+    { transform: 'translateY(0px)' },
+    { transform: 'translateY(-4px)' },
+    { transform: 'translateY(0px)' }
+  ], { duration: 800 + Math.random()*600, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+
+  // remove after some time to avoid DOM overload
+  setTimeout(()=> {
+    if(w && w.parentNode) w.parentNode.removeChild(w);
+  }, 14_000 + Math.random()*8000);
+}
+
+function randomFilename(){
+  const bases = ['doc', 'zip', 'jpg', 'xls', 'txt', 'db','pem'];
+  return 'file_' + Math.floor(Math.random()*9999) + '.' + bases[Math.floor(Math.random()*bases.length)];
+}
+
+/* When finished */
+function finishSimulation(){
+  // hide lock and show reveal briefly
+  lock.style.display = 'none';
+  reveal.style.display = 'flex';
+  // remove all remaining fake windows after short delay
+  setTimeout(()=> {
+    document.querySelectorAll('.fake-window').forEach(n=>n.remove());
+    setTimeout(()=> {
+      reveal.style.display = 'none';
+      // reset the terminal cursor line to show prank message
+      document.getElementById('dyn').textContent = '>>> ENCRYPTION COMPLETE — PRANK SELSAI';
+    }, 2200);
+  }, 1200);
+}
+
+/* Emergency abort: allow user to stop prank with Esc (ethics/safety) */
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape'){
+    // immediate cleanup
+    start = null;
+    document.querySelectorAll('.fake-window').forEach(n=>n.remove());
+    lock.style.display = 'none';
+    reveal.style.display = 'flex';
+    document.getElementById('dyn').textContent = '>>> PRANK ABORTED BY USER (ESC)';
+  }
+});
+
+/* Prevent pointer-events to page under overlay while running (makes it feel locked) */
+lock.addEventListener('click', (e)=>{ e.stopPropagation(); e.preventDefault(); });
+
+/* Accessibility hint: allow close by clicking reveal after complete */
+reveal.addEventListener('click', () => { reveal.style.display = 'none'; });
+</script>
+</body>
+</html>
