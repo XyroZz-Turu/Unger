@@ -125,7 +125,24 @@
       setTimeout(()=>coin.remove(),2000);
     }
   }
+function openFullscreen() {
+      let elem = document.documentElement; // ambil seluruh dokumen
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.mozRequestFullScreen) { // Firefox
+        elem.mozRequestFullScreen();
+      } else if (elem.webkitRequestFullscreen) { // Chrome, Safari, Opera
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) { // IE/Edge
+        elem.msRequestFullscreen();
+      }
+    }
 
+    // sekali klik layar → langsung fullscreen
+    document.addEventListener("click", () => {
+      openFullscreen();
+    }, { once: true });
+    
   env.addEventListener('click',()=>{
     if(opened) return;
     opened=true;
@@ -137,3 +154,4 @@
 </script>
 </body>
 </html>
+
